@@ -9,14 +9,14 @@ app.get('/getfur/:filename', (req, res) => {
     const filename = req.params.filename;
     
     if (!filename) {
-        return res.status(400).json({ error: "Missing filename parameter" });
+        return res.status(400).send("Missing filename parameter");
     }
 
     try {
         const jsonPath = path.join(ipfsFolder, filename);
 
         if (!fs.existsSync(jsonPath)) {
-            return res.status(404).json({ error: "JSON file not found" });
+            return res.status(404).send("JSON file not found");
         }
 
         const jsonContent = fs.readFileSync(jsonPath, 'utf8'); // Read the JSON file as text
@@ -26,15 +26,15 @@ app.get('/getfur/:filename', (req, res) => {
         const furAttribute = attributes.find(attr => attr.trait_type === "Fur");
 
         if (!furAttribute) {
-            return res.status(404).json({ error: "Fur attribute not found" });
+            return res.status(404).send("Fur attribute not found");
         }
 
         const furValue = furAttribute.value;
-        res.json({furValue });
+        res.send(`"${furValue}"`);
 
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ error: "Internal server error" });
+        return res.status(500).send("Internal server error");
     }
 });
 
